@@ -29,12 +29,11 @@
             position: relative;
         }
 
-        /* === TELA PRINCIPAL === */
+        /* === TELA PRINCIPAL (100dvh para caber na primeira visualização) === */
         .container {
             width: 100%;
             max-width: 380px; 
-            min-height: 100vh; /* Fallback para navegadores muito antigos */
-            min-height: 100dvh; /* A MÁGICA AQUI: dvh (Dynamic Viewport Height) respeita a barra de endereços mobile! */
+            min-height: 100dvh; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -73,7 +72,6 @@
             justify-content: center;
             align-items: center;
             font-size: 16px;
-            /* TRUQUE PARA O CELULAR NÃO CORTAR AS BORDAS DO BÚZIO: */
             position: relative; 
             overflow: visible;
         }
@@ -86,25 +84,25 @@
         .percentage {
             font-size: 25px; 
             margin-top: 20px; 
-            margin-bottom: 8px; /* Reduzido para aproximar do texto abaixo */
+            margin-bottom: 8px; 
         }
 
         /* Texto de Participação */
         .participation-text {
-            font-size: 10px; /* Fonte menorzinha */
+            font-size: 10px; 
             text-transform: uppercase;
             margin-bottom: 0px; 
             color: var(--text-color);
         }
 
-        /* === CAIXA INFERIOR COM BOTÕES E PIX === */
+        /* === CAIXA INFERIOR COM BOTÕES E PIX (Volta pro rodapé) === */
         .bottom-actions {
-            margin-top: auto; /* Joga os botões lá pro rodapé da tela inicial */
+            margin-top: auto; /* Restaura o espaçamento vazio no meio da tela */
             width: 100%;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            padding-bottom: 10px; /* Reduzi um pouco para não ficar tão encostado no limite debaixo */
+            padding-bottom: 10px; 
         }
 
         .pix-row {
@@ -120,7 +118,7 @@
             padding: 12px;
             flex-grow: 1; 
             text-align: center;
-            font-size: 9px; /* Diminui 1px para caber o email longo inteiro no botão menor */
+            font-size: 9px; 
             word-break: break-all;
             box-shadow: 4px 4px 0px #000;
             display: flex;
@@ -161,7 +159,48 @@
             width: 100%;
         }
 
-        /* === EASTER EGG: LINK FOFOQUEIRO === */
+        /* === SEGUNDA TELA (A BRINCADEIRA) === */
+        .reaction-container {
+            width: 100%;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 15px 20px 15px; /* Padding extra em cima para separar bem */
+            gap: 15px;
+        }
+
+        #reaction-img {
+            height: 250px; 
+            width: auto; 
+            max-width: 100%; 
+            object-fit: contain; 
+            transition: opacity 0.2s;
+        }
+
+        .reaction-buttons {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .pixel-btn.btn-yes {
+            background-color: #4CAF50; /* Verde */
+            color: white;
+            flex-grow: 1;
+            padding: 15px 10px; /* Um pouco mais gordinho */
+        }
+
+        .pixel-btn.btn-no {
+            background-color: #d32f2f; /* Vermelho */
+            color: white;
+            flex-grow: 1;
+            padding: 15px 10px;
+        }
+
+        /* === EASTER EGG: LINK FOFOQUEIRO (Restaurado) === */
         .gossip-link {
             font-size: 10px;
             color: #888888;
@@ -172,7 +211,7 @@
             text-transform: uppercase;
         }
 
-        /* === MODAL DE FOFOQUEIRA === */
+        /* === MODAL DE FOFOQUEIRA (Restaurado) === */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -216,6 +255,7 @@
             .pix-field { font-size: 7px; padding: 10px; }
             .pixel-btn { font-size: 9px; padding: 10px; }
             .modal-text { font-size: 14px; }
+            #reaction-img { height: 200px; }
         }
     </style>
 </head>
@@ -240,6 +280,14 @@
         </div>
     </div>
 
+    <div class="reaction-container">
+        <img id="reaction-img" src="https://github.com/pedrohecht/omibaina/blob/main/s%C3%A9ria-removebg-preview.png?raw=true" alt="Humor">
+        <div class="reaction-buttons">
+            <button class="pixel-btn btn-yes" onclick="changeReaction('happy')">CONTRIBUÍ</button>
+            <button class="pixel-btn btn-no" onclick="changeReaction('sad')">NÃO CONTRIBUÍ</button>
+        </div>
+    </div>
+
     <a class="gossip-link" onclick="openModal()">ver devedores</a>
 
     <div class="modal-overlay" id="gossip-modal">
@@ -251,7 +299,7 @@
 
     <script>
         // === CONFIGURAÇÃO DA PORCENTAGEM ===
-        const currentPercentage = 44; 
+        const currentPercentage = 38; 
         
         // Elementos do DOM
         const monthDisplay = document.getElementById('month-display');
@@ -266,12 +314,11 @@
         // Atualizar texto da porcentagem
         percentageDisplay.innerText = currentPercentage + '%';
 
-        // Renderizar o Grid de Búzios 
+        // Renderizar o Grid de Búzios
         for (let i = 0; i < currentPercentage; i++) {
             const slot = document.createElement('div');
             slot.className = 'shell-slot filled'; 
             
-            // Repare na alteração do style da imagem para position absolute!
             slot.innerHTML = '<img src="https://github.com/pedrohecht/horario-f1/blob/main/Gemini_Generated_Image_a2e8m9a2e8m9a2e8-removebg-preview.png?raw=true" alt="buzio" style="position: absolute; width: 150%; height: 150%; object-fit: contain; transform: rotate(90deg);">';
             
             grid.appendChild(slot);
@@ -288,7 +335,35 @@
             });
         }
 
-        // === FUNÇÕES DO MODAL ===
+        // === LÓGICA DAS IMAGENS (BRINCADEIRA COM PRELOAD) ===
+        let reactionTimeout; 
+        const imgSeriaUrl = 'https://github.com/pedrohecht/omibaina/blob/main/s%C3%A9ria-removebg-preview.png?raw=true';
+        const imgSorrindoUrl = 'https://github.com/pedrohecht/omibaina/blob/main/sorrindo-removebg-preview.png?raw=true';
+        const imgTristeUrl = 'https://github.com/pedrohecht/omibaina/blob/main/chorando-removebg-preview.png?raw=true';
+
+        // Preload das imagens para tirar o delay
+        const preloadHappy = new Image();
+        preloadHappy.src = imgSorrindoUrl;
+        const preloadSad = new Image();
+        preloadSad.src = imgTristeUrl;
+
+        function changeReaction(mood) {
+            const imgElement = document.getElementById('reaction-img');
+            
+            clearTimeout(reactionTimeout);
+
+            if (mood === 'happy') {
+                imgElement.src = imgSorrindoUrl;
+            } else if (mood === 'sad') {
+                imgElement.src = imgTristeUrl;
+            }
+
+            reactionTimeout = setTimeout(() => {
+                imgElement.src = imgSeriaUrl;
+            }, 3000);
+        }
+
+        // === FUNÇÕES DO MODAL (FOFOQUEIRA) ===
         function openModal() {
             document.getElementById('gossip-modal').style.display = 'flex';
         }
