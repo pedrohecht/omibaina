@@ -95,9 +95,9 @@
             color: var(--text-color);
         }
 
-        /* === CAIXA INFERIOR COM BOTÕES E PIX (Volta pro rodapé) === */
+        /* === CAIXA INFERIOR COM BOTÕES E PIX === */
         .bottom-actions {
-            margin-top: auto; /* Restaura o espaçamento vazio no meio da tela */
+            margin-top: auto; 
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -166,7 +166,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 60px 15px 20px 15px; /* Padding extra em cima para separar bem */
+            padding: 60px 15px 20px 15px; 
             gap: 15px;
         }
 
@@ -187,31 +187,31 @@
         }
 
         .pixel-btn.btn-yes {
-            background-color: #4CAF50; /* Verde */
+            background-color: #4CAF50; 
             color: white;
             flex-grow: 1;
-            padding: 15px 10px; /* Um pouco mais gordinho */
+            padding: 15px 10px; 
         }
 
         .pixel-btn.btn-no {
-            background-color: #d32f2f; /* Vermelho */
+            background-color: #d32f2f; 
             color: white;
             flex-grow: 1;
             padding: 15px 10px;
         }
 
-        /* === EASTER EGG: LINK FOFOQUEIRO (Restaurado) === */
+        /* === EASTER EGG: LINK FOFOQUEIRO === */
         .gossip-link {
             font-size: 10px;
             color: #888888;
-            margin-top: 100vh; /* Fica uma tela inteira para baixo */
+            margin-top: 100vh; 
             margin-bottom: 40px;
             text-decoration: underline;
             cursor: pointer;
             text-transform: uppercase;
         }
 
-        /* === MODAL DE FOFOQUEIRA (Restaurado) === */
+        /* === MODAL DE FOFOQUEIRA === */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -335,11 +335,16 @@
             });
         }
 
-        // === LÓGICA DAS IMAGENS (BRINCADEIRA COM PRELOAD) ===
+        // === LÓGICA DAS IMAGENS E ÁUDIO (BRINCADEIRA) ===
         let reactionTimeout; 
         const imgSeriaUrl = 'https://github.com/pedrohecht/omibaina/blob/main/s%C3%A9ria-removebg-preview.png?raw=true';
         const imgSorrindoUrl = 'https://github.com/pedrohecht/omibaina/blob/main/sorrindo-removebg-preview.png?raw=true';
+        
+        // URL da imagem triste atualizada para a nova que você mandou
         const imgTristeUrl = 'https://github.com/pedrohecht/omibaina/blob/main/chorando-removebg-preview.png?raw=true';
+        
+        // Criando o objeto de áudio (com ?raw=true para o GitHub liberar o arquivo direto)
+        const audioArrasou = new Audio('https://github.com/pedrohecht/omibaina/blob/7faad9c71c17935ecf3b73a69a9f28b350d4fefd/arrasou.mpeg?raw=true');
 
         // Preload das imagens para tirar o delay
         const preloadHappy = new Image();
@@ -350,14 +355,27 @@
         function changeReaction(mood) {
             const imgElement = document.getElementById('reaction-img');
             
+            // Cancela o cronômetro das imagens se clicar rápido
             clearTimeout(reactionTimeout);
 
             if (mood === 'happy') {
                 imgElement.src = imgSorrindoUrl;
+                
+                // Reinicia o áudio do zero caso a pessoa clique várias vezes
+                audioArrasou.currentTime = 0; 
+                audioArrasou.play().catch(error => {
+                    console.log("O navegador bloqueou o áudio automático ou ele ainda não carregou.", error);
+                });
+                
             } else if (mood === 'sad') {
                 imgElement.src = imgTristeUrl;
+                
+                // Se a pessoa clicou em "Não Contribuí", a gente pausa o áudio de parabéns caso esteja tocando!
+                audioArrasou.pause();
+                audioArrasou.currentTime = 0;
             }
 
+            // Conta 3 segundos e volta ao normal
             reactionTimeout = setTimeout(() => {
                 imgElement.src = imgSeriaUrl;
             }, 3000);
