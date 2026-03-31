@@ -26,15 +26,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Removi o padding daqui para controlar a altura da primeira tela perfeitamente */
             position: relative;
         }
 
-        /* === TELA PRINCIPAL (Ocupa exatamente 100% da altura do celular) === */
+        /* === TELA PRINCIPAL === */
         .container {
             width: 100%;
             max-width: 380px; 
-            min-height: 100vh; /* Garante que os botões fiquem no final da tela inicial */
+            min-height: 100vh; /* Fallback para navegadores muito antigos */
+            min-height: 100dvh; /* A MÁGICA AQUI: dvh (Dynamic Viewport Height) respeita a barra de endereços mobile! */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -73,6 +73,9 @@
             justify-content: center;
             align-items: center;
             font-size: 16px;
+            /* TRUQUE PARA O CELULAR NÃO CORTAR AS BORDAS DO BÚZIO: */
+            position: relative; 
+            overflow: visible;
         }
 
         .shell-slot.filled {
@@ -82,8 +85,16 @@
         /* Porcentagem colada nos búzios */
         .percentage {
             font-size: 25px; 
-            margin-top: 20px; /* Margem pequena para colar na grade */
+            margin-top: 20px; 
+            margin-bottom: 8px; /* Reduzido para aproximar do texto abaixo */
+        }
+
+        /* Texto de Participação */
+        .participation-text {
+            font-size: 10px; /* Fonte menorzinha */
+            text-transform: uppercase;
             margin-bottom: 0px; 
+            color: var(--text-color);
         }
 
         /* === CAIXA INFERIOR COM BOTÕES E PIX === */
@@ -93,7 +104,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            padding-bottom: 20px;
+            padding-bottom: 10px; /* Reduzi um pouco para não ficar tão encostado no limite debaixo */
         }
 
         .pix-row {
@@ -109,7 +120,7 @@
             padding: 12px;
             flex-grow: 1; 
             text-align: center;
-            font-size: 10px;
+            font-size: 9px; /* Diminui 1px para caber o email longo inteiro no botão menor */
             word-break: break-all;
             box-shadow: 4px 4px 0px #000;
             display: flex;
@@ -200,8 +211,9 @@
             .shell-slot { font-size: 14px; }
             .main-title { font-size: 22px; }
             .month-title { font-size: 14px; }
-            .percentage { font-size: 26px; }
-            .pix-field { font-size: 8px; padding: 10px; }
+            .percentage { font-size: 22px; }
+            .participation-text { font-size: 8px; }
+            .pix-field { font-size: 7px; padding: 10px; }
             .pixel-btn { font-size: 9px; padding: 10px; }
             .modal-text { font-size: 14px; }
         }
@@ -214,7 +226,9 @@
         <h2 class="month-title" id="month-display">MÊS</h2>
 
         <div class="grid-container" id="shell-grid"></div>
+        
         <h2 class="percentage" id="percentage-display">0%</h2>
+        <p class="participation-text">de participação</p>
 
         <div class="bottom-actions">
             <div class="pix-row">
@@ -252,12 +266,13 @@
         // Atualizar texto da porcentagem
         percentageDisplay.innerText = currentPercentage + '%';
 
-        // Renderizar o Grid de Búzios (Apenas a quantidade exata da porcentagem)
+        // Renderizar o Grid de Búzios 
         for (let i = 0; i < currentPercentage; i++) {
             const slot = document.createElement('div');
             slot.className = 'shell-slot filled'; 
             
-            slot.innerHTML = '<img src="https://github.com/pedrohecht/horario-f1/blob/main/Gemini_Generated_Image_a2e8m9a2e8m9a2e8-removebg-preview.png?raw=true" alt="buzio" style="width: 100%; height: 100%; object-fit: contain; transform: rotate(90deg) scale(1.5);">';
+            // Repare na alteração do style da imagem para position absolute!
+            slot.innerHTML = '<img src="https://github.com/pedrohecht/horario-f1/blob/main/Gemini_Generated_Image_a2e8m9a2e8m9a2e8-removebg-preview.png?raw=true" alt="buzio" style="position: absolute; width: 150%; height: 150%; object-fit: contain; transform: rotate(90deg);">';
             
             grid.appendChild(slot);
         }
