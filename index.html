@@ -29,7 +29,7 @@
             position: relative;
         }
 
-        /* === TELA PRINCIPAL (100dvh para caber na primeira visualização) === */
+        /* === TELA PRINCIPAL === */
         .container {
             width: 100%;
             max-width: 380px; 
@@ -40,7 +40,6 @@
             padding: 20px 15px;
         }
 
-        /* Título Principal */
         .main-title {
             font-size: 28px;
             margin-top: 10px;
@@ -49,14 +48,12 @@
             text-align: center;
         }
 
-        /* Subtítulo do Mês */
         .month-title {
             font-size: 16px;
             margin-bottom: 25px;
             text-transform: uppercase;
         }
 
-        /* Grid de Búzios */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
@@ -80,14 +77,12 @@
             filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.8));
         }
 
-        /* Porcentagem colada nos búzios */
         .percentage {
             font-size: 25px; 
             margin-top: 20px; 
             margin-bottom: 8px; 
         }
 
-        /* Texto de Participação */
         .participation-text {
             font-size: 10px; 
             text-transform: uppercase;
@@ -95,7 +90,6 @@
             color: var(--text-color);
         }
 
-        /* === CAIXA INFERIOR COM BOTÕES E PIX === */
         .bottom-actions {
             margin-top: auto; 
             width: 100%;
@@ -126,7 +120,6 @@
             justify-content: center;
         }
 
-        /* Botões em Pixel Art */
         .pixel-btn {
             border: var(--pixel-border);
             color: var(--text-color);
@@ -211,7 +204,6 @@
             text-transform: uppercase;
         }
 
-        /* === MODAL DE FOFOQUEIRA === */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -245,7 +237,6 @@
             color: #d32f2f; 
         }
 
-        /* Responsividade para telas muito pequenas */
         @media (max-width: 320px) {
             .shell-slot { font-size: 14px; }
             .main-title { font-size: 22px; }
@@ -260,6 +251,9 @@
     </style>
 </head>
 <body>
+
+    <audio id="audio-happy" src="https://github.com/pedrohecht/omibaina/blob/7faad9c71c17935ecf3b73a69a9f28b350d4fefd/arrasou.mpeg?raw=true" preload="auto"></audio>
+    <audio id="audio-sad" src="https://github.com/pedrohecht/omibaina/blob/e58f6c7e998be174b94810751f21daa255858893/e-o-pix-nada-ainda.mp3?raw=true" preload="auto"></audio>
 
     <div class="container">
         <h1 class="main-title">OMIBAINA</h1>
@@ -301,30 +295,25 @@
         // === CONFIGURAÇÃO DA PORCENTAGEM ===
         const currentPercentage = 38; 
         
-        // Elementos do DOM
         const monthDisplay = document.getElementById('month-display');
         const grid = document.getElementById('shell-grid');
         const percentageDisplay = document.getElementById('percentage-display');
 
-        // Descobrir o mês atual e formatar
         const months = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
         const currentMonthIndex = new Date().getMonth();
         monthDisplay.innerText = months[currentMonthIndex];
 
-        // Atualizar texto da porcentagem
         percentageDisplay.innerText = currentPercentage + '%';
 
-        // Renderizar o Grid de Búzios
+        // Renderizar Búzios
         for (let i = 0; i < currentPercentage; i++) {
             const slot = document.createElement('div');
             slot.className = 'shell-slot filled'; 
-            
             slot.innerHTML = '<img src="https://github.com/pedrohecht/horario-f1/blob/main/Gemini_Generated_Image_a2e8m9a2e8m9a2e8-removebg-preview.png?raw=true" alt="buzio" style="position: absolute; width: 150%; height: 150%; object-fit: contain; transform: rotate(90deg);">';
-            
             grid.appendChild(slot);
         }
 
-        // Função para copiar a chave PIX
+        // Função Pix
         function copyPix() {
             const pixKey = document.getElementById('pix-key').innerText;
             navigator.clipboard.writeText(pixKey).then(() => {
@@ -335,18 +324,17 @@
             });
         }
 
-        // === LÓGICA DAS IMAGENS E ÁUDIO (BRINCADEIRA) ===
+        // === LÓGICA DAS IMAGENS E ÁUDIO ===
         let reactionTimeout; 
         const imgSeriaUrl = 'https://github.com/pedrohecht/omibaina/blob/main/s%C3%A9ria-removebg-preview.png?raw=true';
         const imgSorrindoUrl = 'https://github.com/pedrohecht/omibaina/blob/main/sorrindo-removebg-preview.png?raw=true';
-        
-        // URL da imagem triste atualizada para a nova que você mandou
         const imgTristeUrl = 'https://github.com/pedrohecht/omibaina/blob/main/chorando-removebg-preview.png?raw=true';
         
-        // Criando o objeto de áudio (com ?raw=true para o GitHub liberar o arquivo direto)
-        const audioArrasou = new Audio('https://github.com/pedrohecht/omibaina/blob/7faad9c71c17935ecf3b73a69a9f28b350d4fefd/arrasou.mpeg?raw=true');
+        // Elementos de Áudio que criamos no HTML
+        const audioHappy = document.getElementById('audio-happy');
+        const audioSad = document.getElementById('audio-sad');
 
-        // Preload das imagens para tirar o delay
+        // Preload das imagens
         const preloadHappy = new Image();
         preloadHappy.src = imgSorrindoUrl;
         const preloadSad = new Image();
@@ -354,34 +342,38 @@
 
         function changeReaction(mood) {
             const imgElement = document.getElementById('reaction-img');
-            
-            // Cancela o cronômetro das imagens se clicar rápido
             clearTimeout(reactionTimeout);
 
             if (mood === 'happy') {
                 imgElement.src = imgSorrindoUrl;
                 
-                // Reinicia o áudio do zero caso a pessoa clique várias vezes
-                audioArrasou.currentTime = 0; 
-                audioArrasou.play().catch(error => {
-                    console.log("O navegador bloqueou o áudio automático ou ele ainda não carregou.", error);
-                });
+                // Pausa o triste se estiver tocando
+                audioSad.pause();
+                audioSad.currentTime = 0;
+                
+                // Toca o feliz
+                audioHappy.currentTime = 0; 
+                audioHappy.play().catch(e => console.log("Áudio bloqueado pelo navegador", e));
                 
             } else if (mood === 'sad') {
                 imgElement.src = imgTristeUrl;
                 
-                // Se a pessoa clicou em "Não Contribuí", a gente pausa o áudio de parabéns caso esteja tocando!
-                audioArrasou.pause();
-                audioArrasou.currentTime = 0;
+                // Pausa o feliz se estiver tocando
+                audioHappy.pause();
+                audioHappy.currentTime = 0;
+                
+                // Toca o triste
+                audioSad.currentTime = 0;
+                audioSad.play().catch(e => console.log("Áudio bloqueado pelo navegador", e));
             }
 
-            // Conta 3 segundos e volta ao normal
+            // Conta 3 segundos e volta ao rosto sério
             reactionTimeout = setTimeout(() => {
                 imgElement.src = imgSeriaUrl;
             }, 3000);
         }
 
-        // === FUNÇÕES DO MODAL (FOFOQUEIRA) ===
+        // Modal Fofoqueira
         function openModal() {
             document.getElementById('gossip-modal').style.display = 'flex';
         }
