@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meta de Búzios - Omibaina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #f4f4f4; 
+            --text-color: #000000;
+            --pixel-border: 4px solid #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Removi o padding daqui para controlar a altura da primeira tela perfeitamente */
+            position: relative;
+        }
+
+        /* === TELA PRINCIPAL (Ocupa exatamente 100% da altura do celular) === */
+        .container {
+            width: 100%;
+            max-width: 380px; 
+            min-height: 100vh; /* Garante que os botões fiquem no final da tela inicial */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 15px;
+        }
+
+        /* Título Principal */
+        .main-title {
+            font-size: 28px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* Subtítulo do Mês */
+        .month-title {
+            font-size: 16px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        /* Grid de Búzios */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            column-gap: 0px; 
+            row-gap: 15px; 
+            width: 100%;
+            margin-bottom: 0px; 
+        }
+
+        .shell-slot {
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        .shell-slot.filled {
+            filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.8));
+        }
+
+        /* Porcentagem colada nos búzios */
+        .percentage {
+            font-size: 25px; 
+            margin-top: 20px; /* Margem pequena para colar na grade */
+            margin-bottom: 0px; 
+        }
+
+        /* === CAIXA INFERIOR COM BOTÕES E PIX === */
+        .bottom-actions {
+            margin-top: auto; /* Joga os botões lá pro rodapé da tela inicial */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-bottom: 20px;
+        }
+
+        .pix-row {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .pix-field {
+            background-color: #a9a9a9; 
+            border: var(--pixel-border);
+            padding: 12px;
+            flex-grow: 1; 
+            text-align: center;
+            font-size: 10px;
+            word-break: break-all;
+            box-shadow: 4px 4px 0px #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Botões em Pixel Art */
+        .pixel-btn {
+            border: var(--pixel-border);
+            color: var(--text-color);
+            font-family: 'Press Start 2P', cursive;
+            padding: 12px 15px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            box-shadow: 4px 4px 0px #000;
+            transition: transform 0.1s, box-shadow 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pixel-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px #000;
+        }
+
+        .btn-copy {
+            background-color: #a9a9a9; 
+            white-space: nowrap; 
+        }
+
+        .btn-submit {
+            background-color: #4CAF50; 
+            color: white;
+            width: 100%;
+        }
+
+        /* === EASTER EGG: LINK FOFOQUEIRO === */
+        .gossip-link {
+            font-size: 10px;
+            color: #888888;
+            margin-top: 100vh; /* Fica uma tela inteira para baixo */
+            margin-bottom: 40px;
+            text-decoration: underline;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* === MODAL DE FOFOQUEIRA === */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background-color: #ffffff;
+            border: var(--pixel-border);
+            padding: 30px 20px;
+            width: 90%;
+            max-width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            box-shadow: 8px 8px 0px #000;
+        }
+
+        .modal-text {
+            font-size: 18px;
+            text-align: center;
+            line-height: 1.5;
+            color: #d32f2f; 
+        }
+
+        /* Responsividade para telas muito pequenas */
+        @media (max-width: 320px) {
+            .shell-slot { font-size: 14px; }
+            .main-title { font-size: 22px; }
+            .month-title { font-size: 14px; }
+            .percentage { font-size: 26px; }
+            .pix-field { font-size: 8px; padding: 10px; }
+            .pixel-btn { font-size: 9px; padding: 10px; }
+            .modal-text { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="main-title">OMIBAINA</h1>
+        <h2 class="month-title" id="month-display">MÊS</h2>
+
+        <div class="grid-container" id="shell-grid"></div>
+        <h2 class="percentage" id="percentage-display">0%</h2>
+
+        <div class="bottom-actions">
+            <div class="pix-row">
+                <div class="pix-field" id="pix-key">omibainafinanceiro@gmail.com</div>
+                <button class="pixel-btn btn-copy" onclick="copyPix()">COPIAR</button>
+            </div>
+
+            <a href="https://forms.gle/1pMudhhBxVU7JVZJ6" class="pixel-btn btn-submit">ENVIAR COMPROVANTE</a>
+        </div>
+    </div>
+
+    <a class="gossip-link" onclick="openModal()">ver devedores</a>
+
+    <div class="modal-overlay" id="gossip-modal">
+        <div class="modal-box">
+            <p class="modal-text">FOFOQUEIRA!</p>
+            <button class="pixel-btn btn-copy" onclick="closeModal()">FECHAR</button>
+        </div>
+    </div>
+
+    <script>
+        // === CONFIGURAÇÃO DA PORCENTAGEM ===
+        const currentPercentage = 38; 
+        
+        // Elementos do DOM
+        const monthDisplay = document.getElementById('month-display');
+        const grid = document.getElementById('shell-grid');
+        const percentageDisplay = document.getElementById('percentage-display');
+
+        // Descobrir o mês atual e formatar
+        const months = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
+        const currentMonthIndex = new Date().getMonth();
+        monthDisplay.innerText = months[currentMonthIndex];
+
+        // Atualizar texto da porcentagem
+        percentageDisplay.innerText = currentPercentage + '%';
+
+        // Renderizar o Grid de Búzios (Apenas a quantidade exata da porcentagem)
+        for (let i = 0; i < currentPercentage; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'shell-slot filled'; 
+            
+            slot.innerHTML = '<img src="https://github.com/pedrohecht/horario-f1/blob/main/Gemini_Generated_Image_a2e8m9a2e8m9a2e8-removebg-preview.png?raw=true" alt="buzio" style="width: 100%; height: 100%; object-fit: contain; transform: rotate(90deg) scale(1.5);">';
+            
+            grid.appendChild(slot);
+        }
+
+        // Função para copiar a chave PIX
+        function copyPix() {
+            const pixKey = document.getElementById('pix-key').innerText;
+            navigator.clipboard.writeText(pixKey).then(() => {
+                alert('Chave PIX copiada com sucesso!');
+            }).catch(err => {
+                console.error('Erro ao copiar: ', err);
+                alert('Erro ao copiar chave PIX.');
+            });
+        }
+
+        // === FUNÇÕES DO MODAL ===
+        function openModal() {
+            document.getElementById('gossip-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('gossip-modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
